@@ -1,12 +1,21 @@
 import React from 'react';
 import axios from 'axios';
 import SessionCard from '../../src/Components/SessionCard';
+import getConfig from 'next/config';
 
-class Index extends React.Component {
-
+const { publicRuntimeConfig } = getConfig()
+class Session extends React.Component {
+    static GetSessionsUrl() {
+        if (process.env.NODE_ENV === "production") {
+            return process.env.RESTURL_SESSIONS_PROD
+                || publicRuntimeConfig.RESTURL_SESSIONS_PROD;
+        } else {
+            return process.env.RESTURL_SESSIONS_DEV;
+        }
+    }
     static async getInitialProps() {
 
-        var promise = axios.get('http://localhost:4000/sessions').then(response => {
+        var promise = axios.get(Session.GetSessionsUrl()).then(response => {
             return {
                 hasErrored: false,
                 sessionData: response.data
@@ -71,5 +80,5 @@ class Index extends React.Component {
 
 }
 
-export default Index
+export default Session
 
